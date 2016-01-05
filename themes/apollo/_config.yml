@@ -1,0 +1,18 @@
+menu:
+    博客: /
+    Twitter: https://twitter.com/gongzili
+    rss: /atom.xml
+    github: https://github.com/gongzili456
+
+favicon: /favicon.ico
+logo: /logo.png
+
+# comment
+# e.g disqus: seansun
+disqus: geeekr-blog
+duoshuo: 
+
+# google-analytics:
+ga: UA-50816576-1
+# baidu-analytics:
+ba: 
