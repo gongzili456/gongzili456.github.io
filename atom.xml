@@ -3,9 +3,9 @@
   <title><![CDATA[Blog]]></title>
   
   <link href="/atom.xml" rel="self"/>
-  <link href="http://liuguili.xyz/"/>
+  <link href="http://geeekr.com/"/>
   <updated>2015-08-04T02:22:07.000Z</updated>
-  <id>http://liuguili.xyz/</id>
+  <id>http://geeekr.com/</id>
   
   <author>
     <name><![CDATA[liuguili]]></name>
@@ -16,8 +16,8 @@
   
   <entry>
     <title><![CDATA[Writing WebSocket Server use Javascript]]></title>
-    <link href="http://liuguili.xyz/writing-websocket-server-use-javascript/"/>
-    <id>http://liuguili.xyz/writing-websocket-server-use-javascript/</id>
+    <link href="http://geeekr.com/writing-websocket-server-use-javascript/"/>
+    <id>http://geeekr.com/writing-websocket-server-use-javascript/</id>
     <published>2015-08-03T07:39:33.000Z</published>
     <updated>2015-08-04T02:22:07.000Z</updated>
     <content type="html"><![CDATA[<p>##What are WebSocket?</p>
@@ -70,8 +70,8 @@
   
   <entry>
     <title><![CDATA[Install Redis on Debian]]></title>
-    <link href="http://liuguili.xyz/install-redis-on-debian/"/>
-    <id>http://liuguili.xyz/install-redis-on-debian/</id>
+    <link href="http://geeekr.com/install-redis-on-debian/"/>
+    <id>http://geeekr.com/install-redis-on-debian/</id>
     <published>2015-06-19T08:43:29.000Z</published>
     <updated>2015-06-19T09:00:18.000Z</updated>
     <content type="html"><![CDATA[<p>###准备环境：<br>我的本机环境<br><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#lsb_release -a</span></span><br><span class="line"></span><br><span class="line">No LSB modules are available.</span><br><span class="line">Distributor ID:	Debian</span><br><span class="line"><span class="label">Description:</span>	Debian GNU/Linux <span class="number">7.8</span> (wheezy)</span><br><span class="line"><span class="label">Release:</span>	<span class="number">7.8</span></span><br><span class="line"><span class="label">Codename:</span>	wheezy</span><br></pre></td></tr></table></figure></p>
@@ -114,8 +114,8 @@
   
   <entry>
     <title><![CDATA[CentOS 搭建 Ghost 博客]]></title>
-    <link href="http://liuguili.xyz/install-ghost-on-centos/"/>
-    <id>http://liuguili.xyz/install-ghost-on-centos/</id>
+    <link href="http://geeekr.com/install-ghost-on-centos/"/>
+    <id>http://geeekr.com/install-ghost-on-centos/</id>
     <published>2014-12-09T19:52:22.000Z</published>
     <updated>2014-12-09T19:54:23.000Z</updated>
     <content type="html"><![CDATA[<p>至于为什么要写博客网上有很多大牛都写了自己的观点，我就不赘述了，既然你找到了这里，那就意味着你对博客感兴趣；至于为什么选择Ghost，网上也有一大堆的夸赞，但我只想说，它轻便快捷，最重要的是我能看懂Node.js的代码^_^；</p>
@@ -208,8 +208,8 @@
   
   <entry>
     <title><![CDATA[Mac如何更改maven的java版本]]></title>
-    <link href="http://liuguili.xyz/fix-maven-java-version-mac-osx/"/>
-    <id>http://liuguili.xyz/fix-maven-java-version-mac-osx/</id>
+    <link href="http://geeekr.com/fix-maven-java-version-mac-osx/"/>
+    <id>http://geeekr.com/fix-maven-java-version-mac-osx/</id>
     <published>2014-11-21T02:06:24.000Z</published>
     <updated>2014-11-25T23:38:00.000Z</updated>
     <content type="html"><![CDATA[<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.2:compile (default-compile) on project api: Fatal error compiling: invalid target release: 1.7 -&#62; [Help 1]</span><br></pre></td></tr></table></figure>
@@ -241,8 +241,8 @@
   
   <entry>
     <title><![CDATA[istat menu 5.11 注册码]]></title>
-    <link href="http://liuguili.xyz/istat-menu-5-02-zhu-ce-ma/"/>
-    <id>http://liuguili.xyz/istat-menu-5-02-zhu-ce-ma/</id>
+    <link href="http://geeekr.com/istat-menu-5-02-zhu-ce-ma/"/>
+    <id>http://geeekr.com/istat-menu-5-02-zhu-ce-ma/</id>
     <published>2014-10-21T02:18:00.000Z</published>
     <updated>2015-10-14T08:42:31.000Z</updated>
     <content type="html"><![CDATA[<p>Apple 发布了Yosemite后当天就收到推送更新，GeeeKr君当然按耐不住升级了，升级后各种软件都提示升级，istat menu升级到5.02版本需要注册码，首先声明有能力当然要支持正版了，我等屌丝只好苦寻免费办法了，威锋社区是个好地方，好多热心网友都在上面分享好东西，不时去逛逛总会有收获的。这个注册码就是热心网友在威锋上分享的。现在我也把它转赠与各位读者。</p>
@@ -258,14 +258,14 @@
     </summary>
     
       <category term="
-- 软件破解" scheme="http://liuguili.xyz/tags/%E8%BD%AF%E4%BB%B6%E7%A0%B4%E8%A7%A3/"/>
+- 软件破解" scheme="http://geeekr.com/tags/%E8%BD%AF%E4%BB%B6%E7%A0%B4%E8%A7%A3/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[动手写游戏--2048]]></title>
-    <link href="http://liuguili.xyz/write-game-2048/"/>
-    <id>http://liuguili.xyz/write-game-2048/</id>
+    <link href="http://geeekr.com/write-game-2048/"/>
+    <id>http://geeekr.com/write-game-2048/</id>
     <published>2014-10-16T23:27:05.000Z</published>
     <updated>2014-10-17T01:32:34.000Z</updated>
     <content type="html"><![CDATA[<p>2048游戏大家都很熟悉了，今天来练练手。<br><img src="http://geeekr.qiniudn.com/images/6/71/b03d53e397c9f1e46ca0eb9a89e00.png" alt=""></p>
@@ -295,14 +295,14 @@
     
       <category term="
 - game
-- 2048" scheme="http://liuguili.xyz/tags/game-2048/"/>
+- 2048" scheme="http://geeekr.com/tags/game-2048/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[三角函数和差公式]]></title>
-    <link href="http://liuguili.xyz/san-jiao-han-shu-he-chai-gong-shi/"/>
-    <id>http://liuguili.xyz/san-jiao-han-shu-he-chai-gong-shi/</id>
+    <link href="http://geeekr.com/san-jiao-han-shu-he-chai-gong-shi/"/>
+    <id>http://geeekr.com/san-jiao-han-shu-he-chai-gong-shi/</id>
     <published>2014-10-16T19:06:52.000Z</published>
     <updated>2014-10-16T21:12:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://geeekr.qiniudn.com/images/e/b3/151444b7bd635c4ac14e7c677d918.jpg" alt=""><br>公式：</p>
@@ -322,8 +322,8 @@
   
   <entry>
     <title><![CDATA[JDK剖析-集合篇-LinkedList]]></title>
-    <link href="http://liuguili.xyz/jdk-source-collections-linkedlist/"/>
-    <id>http://liuguili.xyz/jdk-source-collections-linkedlist/</id>
+    <link href="http://geeekr.com/jdk-source-collections-linkedlist/"/>
+    <id>http://geeekr.com/jdk-source-collections-linkedlist/</id>
     <published>2014-09-12T11:04:16.000Z</published>
     <updated>2014-09-26T19:32:08.000Z</updated>
     <content type="html"><![CDATA[<p>##构造方法</p>
@@ -360,14 +360,14 @@
 - Java
 - Java集合
 - LinkedList
-- java" scheme="http://liuguili.xyz/tags/Java-Java%E9%9B%86%E5%90%88-LinkedList-java/"/>
+- java" scheme="http://geeekr.com/tags/Java-Java%E9%9B%86%E5%90%88-LinkedList-java/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[JDK剖析-集合篇-ArrayList]]></title>
-    <link href="http://liuguili.xyz/jdk-source-collections-arraylist/"/>
-    <id>http://liuguili.xyz/jdk-source-collections-arraylist/</id>
+    <link href="http://geeekr.com/jdk-source-collections-arraylist/"/>
+    <id>http://geeekr.com/jdk-source-collections-arraylist/</id>
     <published>2014-09-12T10:06:53.000Z</published>
     <updated>2014-09-24T08:02:56.000Z</updated>
     <content type="html"><![CDATA[<p>Arraylist和LinkedList是在工作中常用的集合工具。</p>
@@ -412,14 +412,14 @@
 - Java
 - Java集合
 - ArrayList
-- java" scheme="http://liuguili.xyz/tags/Java-Java%E9%9B%86%E5%90%88-ArrayList-java/"/>
+- java" scheme="http://geeekr.com/tags/Java-Java%E9%9B%86%E5%90%88-ArrayList-java/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[Memcached内存分配]]></title>
-    <link href="http://liuguili.xyz/memcachednei-cun-fen-pei/"/>
-    <id>http://liuguili.xyz/memcachednei-cun-fen-pei/</id>
+    <link href="http://geeekr.com/memcachednei-cun-fen-pei/"/>
+    <id>http://geeekr.com/memcachednei-cun-fen-pei/</id>
     <published>2014-09-04T02:33:15.000Z</published>
     <updated>2014-09-23T06:55:03.000Z</updated>
     <content type="html"><![CDATA[<p>Memcached是在项目中常使用的分布式缓存服务。很好的解决了MySQL数据库的访问压力。所以我们要懂它，用好它。</p>
@@ -438,14 +438,14 @@
       <category term="
 - 内存
 - Memcached
-- 缓存" scheme="http://liuguili.xyz/tags/%E5%86%85%E5%AD%98-Memcached-%E7%BC%93%E5%AD%98/"/>
+- 缓存" scheme="http://geeekr.com/tags/%E5%86%85%E5%AD%98-Memcached-%E7%BC%93%E5%AD%98/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[从内存角度理解Java线程安全]]></title>
-    <link href="http://liuguili.xyz/thread-safe-jmm/"/>
-    <id>http://liuguili.xyz/thread-safe-jmm/</id>
+    <link href="http://geeekr.com/thread-safe-jmm/"/>
+    <id>http://geeekr.com/thread-safe-jmm/</id>
     <published>2014-09-01T09:20:34.000Z</published>
     <updated>2014-09-23T06:54:34.000Z</updated>
     <content type="html"><![CDATA[<p>线程安全：无非就是保证多个线程有序的访问或修改共享数据。</p>
@@ -479,14 +479,14 @@
 - Java
 - 线程安全
 - Thread-save
-- java" scheme="http://liuguili.xyz/tags/%E5%86%85%E5%AD%98-Java-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8-Thread-save-java/"/>
+- java" scheme="http://geeekr.com/tags/%E5%86%85%E5%AD%98-Java-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8-Thread-save-java/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[在Mac上使用tree命令]]></title>
-    <link href="http://liuguili.xyz/tree-command-on-mac/"/>
-    <id>http://liuguili.xyz/tree-command-on-mac/</id>
+    <link href="http://geeekr.com/tree-command-on-mac/"/>
+    <id>http://geeekr.com/tree-command-on-mac/</id>
     <published>2014-08-29T03:20:47.000Z</published>
     <updated>2014-12-09T19:26:01.000Z</updated>
     <content type="html"><![CDATA[<p>以树的形式来显示目录信息可读性非常高，就像下面这样，在网上也经常看到下面这种格式，其实实现起来非常简单，Unix系统里面都会有一个命令<code>tree</code>(需要安装)，功能就是用来以树的形式来遍历目录的。</p>
@@ -503,14 +503,14 @@
     
       <category term="
 - Mac
-- shell" scheme="http://liuguili.xyz/tags/Mac-shell/"/>
+- shell" scheme="http://geeekr.com/tags/Mac-shell/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[看看Spring的源码(二)——bean实例化]]></title>
-    <link href="http://liuguili.xyz/read-spring-source-two-beans-initialization/"/>
-    <id>http://liuguili.xyz/read-spring-source-two-beans-initialization/</id>
+    <link href="http://geeekr.com/read-spring-source-two-beans-initialization/"/>
+    <id>http://geeekr.com/read-spring-source-two-beans-initialization/</id>
     <published>2014-08-20T06:09:31.000Z</published>
     <updated>2014-08-21T06:52:29.000Z</updated>
     <content type="html"><![CDATA[<p>首先来看一段代码，看过上一节的朋友肯定对这段代码并不陌生。这一段代码诠释了Spring加载bean的完整过程，包括读取配置文件，扫描包，加载类，实例化bean，注入bean属性依赖。</p>
@@ -557,14 +557,14 @@
     </summary>
     
       <category term="
-- Spring" scheme="http://liuguili.xyz/tags/Spring/"/>
+- Spring" scheme="http://geeekr.com/tags/Spring/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[看看Spring的源码（一）——Bean加载过程]]></title>
-    <link href="http://liuguili.xyz/read-spring-source-1-how-to-load-bean/"/>
-    <id>http://liuguili.xyz/read-spring-source-1-how-to-load-bean/</id>
+    <link href="http://geeekr.com/read-spring-source-1-how-to-load-bean/"/>
+    <id>http://geeekr.com/read-spring-source-1-how-to-load-bean/</id>
     <published>2014-08-15T14:22:40.000Z</published>
     <updated>2014-08-21T06:52:48.000Z</updated>
     <content type="html"><![CDATA[<p>最近几天跟同事聊起Spring的一些问题，对一些地方有些疑问，趁这两天有点空，看看Spring的源码，了解下具体的实现细节。本文基于Spring 4.0.5版本。</p>
@@ -614,14 +614,14 @@
     </summary>
     
       <category term="
-- Spring" scheme="http://liuguili.xyz/tags/Spring/"/>
+- Spring" scheme="http://geeekr.com/tags/Spring/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[归并排序（Merge sort）]]></title>
-    <link href="http://liuguili.xyz/gui-bing-pai-xu-merge-sort/"/>
-    <id>http://liuguili.xyz/gui-bing-pai-xu-merge-sort/</id>
+    <link href="http://geeekr.com/gui-bing-pai-xu-merge-sort/"/>
+    <id>http://geeekr.com/gui-bing-pai-xu-merge-sort/</id>
     <published>2014-07-21T02:49:27.000Z</published>
     <updated>2014-09-23T06:53:22.000Z</updated>
     <content type="html"><![CDATA[<p><strong>归并算法(merge)</strong>：指的是将两个已经排序的序列合并成一个序列的操作。<br><img src="http://upload.wikimedia.org/wikipedia/commons/c/c5/Merge_sort_animation2.gif" alt=""></p>
@@ -642,14 +642,14 @@
       <category term="
 - 算法
 - sort
-- 排序" scheme="http://liuguili.xyz/tags/%E7%AE%97%E6%B3%95-sort-%E6%8E%92%E5%BA%8F/"/>
+- 排序" scheme="http://geeekr.com/tags/%E7%AE%97%E6%B3%95-sort-%E6%8E%92%E5%BA%8F/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[Install Shadowsocks on Centos]]></title>
-    <link href="http://liuguili.xyz/install-shadowsocks-on-centos/"/>
-    <id>http://liuguili.xyz/install-shadowsocks-on-centos/</id>
+    <link href="http://geeekr.com/install-shadowsocks-on-centos/"/>
+    <id>http://geeekr.com/install-shadowsocks-on-centos/</id>
     <published>2014-07-15T10:45:44.000Z</published>
     <updated>2014-09-23T06:53:01.000Z</updated>
     <content type="html"><![CDATA[<blockquote>
@@ -692,14 +692,14 @@
 - shadowsocks
 - 翻墙
 - CentOS
-- Shadowsocks" scheme="http://liuguili.xyz/tags/shadowsocks-%E7%BF%BB%E5%A2%99-CentOS-Shadowsocks/"/>
+- Shadowsocks" scheme="http://geeekr.com/tags/shadowsocks-%E7%BF%BB%E5%A2%99-CentOS-Shadowsocks/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[主机已经迁移至旧金山]]></title>
-    <link href="http://liuguili.xyz/zhu-ji-yi-jing-qian-yi-zhi-jiu-jin-shan/"/>
-    <id>http://liuguili.xyz/zhu-ji-yi-jing-qian-yi-zhi-jiu-jin-shan/</id>
+    <link href="http://geeekr.com/zhu-ji-yi-jing-qian-yi-zhi-jiu-jin-shan/"/>
+    <id>http://geeekr.com/zhu-ji-yi-jing-qian-yi-zhi-jiu-jin-shan/</id>
     <published>2014-07-15T10:07:28.000Z</published>
     <updated>2014-09-23T06:52:15.000Z</updated>
     <content type="html"><![CDATA[<p>用了一个多月的DigitalOcean新加坡机房，感受实在不爽，很不稳定。当初为了比较低的响应时间而选择了新加坡机房，但是DigitalOcean实在太不用心了。服务不稳定，经常丢包。联通和电信的线路还不拥有同等待遇。索性搬到了旧金山。还是5刀的套餐。</p>
@@ -716,14 +716,14 @@
 - 主机
 - DigitalOcean
 - shadowsocks
-- Shadowsocks" scheme="http://liuguili.xyz/tags/VPN-blog-%E4%B8%BB%E6%9C%BA-DigitalOcean-shadowsocks-Shadowsocks/"/>
+- Shadowsocks" scheme="http://geeekr.com/tags/VPN-blog-%E4%B8%BB%E6%9C%BA-DigitalOcean-shadowsocks-Shadowsocks/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[Mac下安装SVN 插件 javaHL not available]]></title>
-    <link href="http://liuguili.xyz/install-svn-on-mac-javahl-not-acailable/"/>
-    <id>http://liuguili.xyz/install-svn-on-mac-javahl-not-acailable/</id>
+    <link href="http://geeekr.com/install-svn-on-mac-javahl-not-acailable/"/>
+    <id>http://geeekr.com/install-svn-on-mac-javahl-not-acailable/</id>
     <published>2014-06-16T08:31:37.000Z</published>
     <updated>2014-08-21T06:55:42.000Z</updated>
     <content type="html"><![CDATA[<p>当在MAC环境下的eclipse安装subeclipse插件时会出现如下图所示的错误：</p>
@@ -753,14 +753,14 @@
     
       <category term="
 - Mac
-- SVN" scheme="http://liuguili.xyz/tags/Mac-SVN/"/>
+- SVN" scheme="http://geeekr.com/tags/Mac-SVN/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[修改MySQL的字符集]]></title>
-    <link href="http://liuguili.xyz/change-mysql-character/"/>
-    <id>http://liuguili.xyz/change-mysql-character/</id>
+    <link href="http://geeekr.com/change-mysql-character/"/>
+    <id>http://geeekr.com/change-mysql-character/</id>
     <published>2014-06-16T06:19:50.000Z</published>
     <updated>2014-12-09T19:23:00.000Z</updated>
     <content type="html"><![CDATA[<p>编辑MySQL的配置文件</p>
@@ -775,14 +775,14 @@
     
       <category term="
 - MySQL
-- 字符" scheme="http://liuguili.xyz/tags/MySQL-%E5%AD%97%E7%AC%A6/"/>
+- 字符" scheme="http://geeekr.com/tags/MySQL-%E5%AD%97%E7%AC%A6/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[替换Google字体服务，加速ghost]]></title>
-    <link href="http://liuguili.xyz/overwrite-google-api/"/>
-    <id>http://liuguili.xyz/overwrite-google-api/</id>
+    <link href="http://geeekr.com/overwrite-google-api/"/>
+    <id>http://geeekr.com/overwrite-google-api/</id>
     <published>2014-06-15T06:43:45.000Z</published>
     <updated>2014-09-23T06:50:58.000Z</updated>
     <content type="html"><![CDATA[<p>用上了强大的ghost以后，又装修了一下门面。<br>安装了<a href="https://github.com/oswaldoacauan/ghostium" target="_blank" rel="external">Ghostium</a>主题。<br><img src="http://geeekr.qiniudn.com/images/1/30/e8cd2a93ec3e76c399321dbbedfe6.png" alt=""></p>
@@ -801,7 +801,7 @@
     
       <category term="
 - google
-- ghost" scheme="http://liuguili.xyz/tags/google-ghost/"/>
+- ghost" scheme="http://geeekr.com/tags/google-ghost/"/>
     
   </entry>
   
