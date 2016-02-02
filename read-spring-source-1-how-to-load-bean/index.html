@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>看看Spring的源码（一）——Bean加载过程 | Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近几天跟同事聊起Spring的一些问题，对一些地方有些疑问，趁这两天有点空，看看Spring的源码，了解下具体的实现细节。本文基于Spring 4.0.5版本。
+首先Web项目使用Spring是通过在web.xml里面配置org.springframework.web.context.ContextLoaderListener初始化IOC容器的。123&amp;lt;listener&amp;gt;	&amp;lt;l">
+<meta property="og:type" content="article">
+<meta property="og:title" content="看看Spring的源码（一）——Bean加载过程">
+<meta property="og:url" content="http://liuguili.xyz/read-spring-source-1-how-to-load-bean/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="最近几天跟同事聊起Spring的一些问题，对一些地方有些疑问，趁这两天有点空，看看Spring的源码，了解下具体的实现细节。本文基于Spring 4.0.5版本。
+首先Web项目使用Spring是通过在web.xml里面配置org.springframework.web.context.ContextLoaderListener初始化IOC容器的。123&amp;lt;listener&amp;gt;	&amp;lt;l">
+<meta property="og:updated_time" content="2014-08-21T06:52:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="看看Spring的源码（一）——Bean加载过程">
+<meta name="twitter:description" content="最近几天跟同事聊起Spring的一些问题，对一些地方有些疑问，趁这两天有点空，看看Spring的源码，了解下具体的实现细节。本文基于Spring 4.0.5版本。
+首先Web项目使用Spring是通过在web.xml里面配置org.springframework.web.context.ContextLoaderListener初始化IOC容器的。123&amp;lt;listener&amp;gt;	&amp;lt;l">
+  
+    <link rel="alternative" href="/atom.xml" title="Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://liuguili.xyz"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-read-spring-source-1-how-to-load-bean" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/read-spring-source-1-how-to-load-bean/" class="article-date">
+  <time datetime="2014-08-15T14:22:40.000Z" itemprop="datePublished">2014-08-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      看看Spring的源码（一）——Bean加载过程
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近几天跟同事聊起Spring的一些问题，对一些地方有些疑问，趁这两天有点空，看看Spring的源码，了解下具体的实现细节。本文基于Spring 4.0.5版本。</p>
+<p>首先Web项目使用Spring是通过在web.xml里面配置<br><code>org.springframework.web.context.ContextLoaderListener</code>初始化IOC容器的。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">listener</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="title">listener-class</span>&gt;</span>org.springframework.web.context.ContextLoaderListener<span class="tag">&lt;/<span class="title">listener-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">listener</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>那就以此为切入点顺藤摸瓜。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ContextLoaderListener</span> <span class="keyword">extends</span> <span class="title">ContextLoader</span> <span class="keyword">implements</span> <span class="title">ServletContextListener</span></span></span><br></pre></td></tr></table></figure>
+<p><code>ContextLoaderListener</code>继承了<code>ContextLoader</code>，并且实现<code>ServletContextListener</code>接口。当Server容器（一般指tomcat）启动时，会收到事件初始化。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextInitialized</span><span class="params">(ServletContextEvent event)</span> </span>&#123;</span><br><span class="line">	initWebApplicationContext(event.getServletContext());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>initWebApplicationContext</code>方法是在<code>org.springframework.web.context.ContextLoader</code>类里面。方法太长，分段读一下。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (servletContext.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE) != <span class="keyword">null</span>) &#123;</span><br><span class="line">	<span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Cannot initialize context because there is already a root application context present - "</span> +<span class="string">"check whether you have multiple ContextLoader* definitions in your web.xml!"</span>);</span><br><span class="line">&#125;</span><br><span class="line">Log logger = LogFactory.getLog(ContextLoader.class);</span><br><span class="line">servletContext.log(<span class="string">"Initializing Spring root WebApplicationContext"</span>);</span><br><span class="line"><span class="keyword">if</span> (logger.isInfoEnabled()) &#123;</span><br><span class="line">	logger.info(<span class="string">"Root WebApplicationContext: initialization started"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">long</span> startTime = System.currentTimeMillis();</span><br></pre></td></tr></table></figure></p>
+<p>首先是判断<code>servletContext</code>中是否已经注册了<code>WebApplicationContext</code>，如果有则抛出异常，避免重复注册。然后就是启用log，启动计时。本方法的关键就在于try代码块里的内容<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// Store context in local instance variable, to guarantee that</span></span><br><span class="line">    <span class="comment">// it is available on ServletContext shutdown.</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.context == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.context = createWebApplicationContext(servletContext);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.context <span class="keyword">instanceof</span> ConfigurableWebApplicationContext) &#123;</span><br><span class="line">        ConfigurableWebApplicationContext cwac = (ConfigurableWebApplicationContext) <span class="keyword">this</span>.context;</span><br><span class="line">        <span class="keyword">if</span> (!cwac.isActive()) &#123;</span><br><span class="line">            <span class="comment">// The context has not yet been refreshed -&gt; provide services such as</span></span><br><span class="line">            <span class="comment">// setting the parent context, setting the application context id, etc</span></span><br><span class="line">            <span class="keyword">if</span> (cwac.getParent() == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// The context instance was injected without an explicit parent -&gt;</span></span><br><span class="line">                <span class="comment">// determine parent for root web application context, if any.</span></span><br><span class="line">                ApplicationContext parent = loadParentContext(servletContext);</span><br><span class="line">                cwac.setParent(parent);</span><br><span class="line">            &#125;</span><br><span class="line">            configureAndRefreshWebApplicationContext(cwac, servletContext);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, <span class="keyword">this</span>.context);</span><br><span class="line"></span><br><span class="line">    ClassLoader ccl = Thread.currentThread().getContextClassLoader();</span><br><span class="line">    <span class="keyword">if</span> (ccl == ContextLoader.class.getClassLoader()) &#123;</span><br><span class="line">        currentContext = <span class="keyword">this</span>.context;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (ccl != <span class="keyword">null</span>) &#123;</span><br><span class="line">        currentContextPerThread.put(ccl, <span class="keyword">this</span>.context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">        logger.debug(<span class="string">"Published root WebApplicationContext as ServletContext attribute with name ["</span> +</span><br><span class="line">                WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE + <span class="string">"]"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (logger.isInfoEnabled()) &#123;</span><br><span class="line">        <span class="keyword">long</span> elapsedTime = System.currentTimeMillis() - startTime;</span><br><span class="line">        logger.info(<span class="string">"Root WebApplicationContext: initialization completed in "</span> + elapsedTime + <span class="string">" ms"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.context;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里面有几个关键的方法。首先看一下<code>createWebApplicationContext()</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> WebApplicationContext <span class="title">createWebApplicationContext</span><span class="params">(ServletContext sc)</span> </span>&#123;</span><br><span class="line">    Class&lt;?&gt; contextClass = determineContextClass(sc);</span><br><span class="line">    <span class="keyword">if</span> (!ConfigurableWebApplicationContext.class.isAssignableFrom(contextClass)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ApplicationContextException(<span class="string">"Custom context class ["</span> + contextClass.getName() +</span><br><span class="line">                <span class="string">"] is not of type ["</span> + ConfigurableWebApplicationContext.class.getName() + <span class="string">"]"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (ConfigurableWebApplicationContext) BeanUtils.instantiateClass(contextClass);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先<code>determineContextClass()</code>方法查明具体的<code>Context</code>类，他会读取<code>servletContext</code>的初始化参数<code>contextClass</code>，此参数我们一半不配置，所以<code>Spring</code>就会读取跟<code>org.springframework.web.context.WebApplicationContext</code>同一个包下面的<code>ContextLoader.properties</code>文件读取默认设置，反射出<code>org.springframework.web.context.support.XmlWebApplicationContext</code>类来。接下来就是在<code>configureAndRefreshWebApplicationContext()</code>方法里将新创建的<code>XmlWebApplicationContext</code>进行初始化。首先会设置一个默认ID，即<code>org.springframework.web.context.WebApplicationContext:</code>+你项目的<code>ContextPath</code>。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (ObjectUtils.identityToString(wac).equals(wac.getId())) &#123;</span><br><span class="line">    <span class="comment">// The application context id is still set to its original default</span></span><br><span class="line">    <span class="comment">// value</span></span><br><span class="line">    <span class="comment">// -&gt; assign a more useful id based on available information</span></span><br><span class="line">    String idParam = sc.getInitParameter(CONTEXT_ID_PARAM);</span><br><span class="line">    <span class="keyword">if</span> (idParam != <span class="keyword">null</span>) &#123;</span><br><span class="line">        wac.setId(idParam);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Generate default id...</span></span><br><span class="line">        wac.setId(ConfigurableWebApplicationContext.APPLICATION_CONTEXT_ID_PREFIX + ObjectUtils.getDisplayString(sc.getContextPath()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>紧接着就是将<code>ServletContext</code>设置成<code>XmlWebApplicationContext</code>的属性，这样<code>Spring</code>就能在上下文里轻松拿到<code>ServletContext</code>了。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wac.setServletContext(sc);</span><br></pre></td></tr></table></figure></p>
+<p>接下来就是读取<code>web.xml</code>文件中的<code>contextConfigLocation</code>参数。如果没有配置就会去读<code>WEB-INF下的applicationContext.xml</code>文件。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">context-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="title">param-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">param-value</span>&gt;</span>classpath:beans.xml<span class="tag">&lt;/<span class="title">param-value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">context-param</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>并将值设置(就是我们的Spring配置文件的路径)进<code>XmlWebApplicationContext</code>中。然后就会在指定的路径加载配置文件。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">String configLocationParam = sc.getInitParameter(CONFIG_LOCATION_PARAM);</span><br><span class="line"><span class="keyword">if</span> (configLocationParam != <span class="keyword">null</span>) &#123;</span><br><span class="line">    wac.setConfigLocation(configLocationParam);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接下来就是<code>customizeContext(sc, wac)</code>方法，此方法会根据用户配置的<code>globalInitializerClasses</code>参数来初始化一些用户自定义的属性，一般我们不配置，所以这里什么也不做。</p>
+<p>最后登场的就是最核心的方法了，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wac.refresh();</span><br></pre></td></tr></table></figure></p>
+<p>在这个方法里，会完成资源文件的加载、配置文件解析、Bean定义的注册、组件的初始化等核心工作，我们一探究竟。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">refresh</span><span class="params">()</span> <span class="keyword">throws</span> BeansException, IllegalStateException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>.startupShutdownMonitor) &#123;</span><br><span class="line">        <span class="comment">// Prepare this context for refreshing.</span></span><br><span class="line">        prepareRefresh();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Tell the subclass to refresh the internal bean factory.</span></span><br><span class="line">        ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Prepare the bean factory for use in this context.</span></span><br><span class="line">        prepareBeanFactory(beanFactory);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// Allows post-processing of the bean factory in context subclasses.</span></span><br><span class="line">            postProcessBeanFactory(beanFactory);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Invoke factory processors registered as beans in the context.</span></span><br><span class="line">            invokeBeanFactoryPostProcessors(beanFactory);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Register bean processors that intercept bean creation.</span></span><br><span class="line">            registerBeanPostProcessors(beanFactory);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Initialize message source for this context.</span></span><br><span class="line">            initMessageSource();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Initialize event multicaster for this context.</span></span><br><span class="line">            initApplicationEventMulticaster();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Initialize other special beans in specific context subclasses.</span></span><br><span class="line">            onRefresh();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Check for listener beans and register them.</span></span><br><span class="line">            registerListeners();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Instantiate all remaining (non-lazy-init) singletons.</span></span><br><span class="line">            finishBeanFactoryInitialization(beanFactory);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Last step: publish corresponding event.</span></span><br><span class="line">            finishRefresh();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">catch</span> (BeansException ex) &#123;</span><br><span class="line">            <span class="comment">// Destroy already created singletons to avoid dangling resources.</span></span><br><span class="line">            destroyBeans();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Reset 'active' flag.</span></span><br><span class="line">            cancelRefresh(ex);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Propagate exception to caller.</span></span><br><span class="line">            <span class="keyword">throw</span> ex;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>次方法是同步的，避免重复刷新，每个步骤都放在单独的方法内，流程清晰，是值得学习的地方。这里面有个重要的方法是<code>finishBeanFactoryInitialization(beanFactory);</code>，里面的内容是Spring如何实例化bean，并注入依赖的，这个内容下一节讲，本节只说明Spring是如何加载class文件的。</p>
+<p>首先就是<code>prepareRefresh()</code>方法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">prepareRefresh</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.startupDate = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>.activeMonitor) &#123;</span><br><span class="line">        <span class="keyword">this</span>.active = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (logger.isInfoEnabled()) &#123;</span><br><span class="line">        logger.info(<span class="string">"Refreshing "</span> + <span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Initialize any placeholder property sources in the context environment</span></span><br><span class="line">    initPropertySources();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Validate that all properties marked as required are resolvable</span></span><br><span class="line">    <span class="comment">// see ConfigurablePropertyResolver#setRequiredProperties</span></span><br><span class="line">    getEnvironment().validateRequiredProperties();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>此方法做一些准备工作，如记录开始时间，输出日志，<code>initPropertySources();</code>和<code>getEnvironment().validateRequiredProperties();</code>一般没干什么事。</p>
+<p>接下来就是初始化<code>BeanFactory</code>，是整个<code>refresh()</code>方法的核心，其中完成了配置文件的加载、解析、注册<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();</span><br></pre></td></tr></table></figure></p>
+<p>看看它里面都做了些什么？<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> ConfigurableListableBeanFactory <span class="title">obtainFreshBeanFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    refreshBeanFactory();</span><br><span class="line">    ConfigurableListableBeanFactory beanFactory = getBeanFactory();</span><br><span class="line">    <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">        logger.debug(<span class="string">"Bean factory for "</span> + getDisplayName() + <span class="string">": "</span> + beanFactory);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> beanFactory;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先<code>refreshBeanFactory()</code>：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">refreshBeanFactory</span><span class="params">()</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (hasBeanFactory()) &#123;</span><br><span class="line">        destroyBeans();</span><br><span class="line">        closeBeanFactory();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        DefaultListableBeanFactory beanFactory = createBeanFactory();</span><br><span class="line">        beanFactory.setSerializationId(getId());</span><br><span class="line">        customizeBeanFactory(beanFactory);</span><br><span class="line">        loadBeanDefinitions(beanFactory);</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>.beanFactoryMonitor) &#123;</span><br><span class="line">            <span class="keyword">this</span>.beanFactory = beanFactory;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ApplicationContextException(<span class="string">"I/O error parsing bean definition source for "</span> + getDisplayName(), ex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们看到会创建一个<code>DefaultListableBeanFactory</code>实例<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DefaultListableBeanFactory beanFactory = createBeanFactory();</span><br></pre></td></tr></table></figure></p>
+<p>再设置一个ID<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">beanFactory.setSerializationId(getId());</span><br></pre></td></tr></table></figure></p>
+<p>然后设置一些自定义参数：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">customizeBeanFactory(beanFactory);</span><br></pre></td></tr></table></figure></p>
+<p>这里面最重要的就是<code>loadBeanDefinitions(beanFactory);</code>方法了。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">loadBeanDefinitions</span><span class="params">(DefaultListableBeanFactory beanFactory)</span> <span class="keyword">throws</span> BeansException, IOException </span>&#123;</span><br><span class="line">    <span class="comment">// Create a new XmlBeanDefinitionReader for the given BeanFactory.</span></span><br><span class="line">    XmlBeanDefinitionReader beanDefinitionReader = <span class="keyword">new</span> XmlBeanDefinitionReader(beanFactory);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Configure the bean definition reader with this context's</span></span><br><span class="line">    <span class="comment">// resource loading environment.</span></span><br><span class="line">    beanDefinitionReader.setEnvironment(<span class="keyword">this</span>.getEnvironment());</span><br><span class="line">    beanDefinitionReader.setResourceLoader(<span class="keyword">this</span>);</span><br><span class="line">    beanDefinitionReader.setEntityResolver(<span class="keyword">new</span> ResourceEntityResolver(<span class="keyword">this</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Allow a subclass to provide custom initialization of the reader,</span></span><br><span class="line">    <span class="comment">// then proceed with actually loading the bean definitions.</span></span><br><span class="line">    initBeanDefinitionReader(beanDefinitionReader);</span><br><span class="line">    loadBeanDefinitions(beanDefinitionReader);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>此方法会通过<code>XmlBeanDefinitionReader</code>加载bean定义。具体的实现方法是在<code>org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions</code>方法中定义的。这里设计了层层调用，有好多重载方法，主要就是加载Spring所有的配置文件(可能会有多个)，以备后面解析，注册之用。我一路追踪到<code>org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.doRegisterBeanDefinitions(Element root)</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doRegisterBeanDefinitions</span><span class="params">(Element root)</span> </span>&#123;</span><br><span class="line">    String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);</span><br><span class="line">    <span class="keyword">if</span> (StringUtils.hasText(profileSpec)) &#123;</span><br><span class="line">        Assert.state(<span class="keyword">this</span>.environment != <span class="keyword">null</span>, <span class="string">"Environment must be set for evaluating profiles"</span>);</span><br><span class="line">        String[] specifiedProfiles = StringUtils.tokenizeToStringArray(</span><br><span class="line">                profileSpec, BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS);</span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">this</span>.environment.acceptsProfiles(specifiedProfiles)) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    BeanDefinitionParserDelegate parent = <span class="keyword">this</span>.delegate;</span><br><span class="line">    <span class="keyword">this</span>.delegate = createDelegate(<span class="keyword">this</span>.readerContext, root, parent);</span><br><span class="line">    preProcessXml(root);</span><br><span class="line">    parseBeanDefinitions(root, <span class="keyword">this</span>.delegate);</span><br><span class="line">    postProcessXml(root);</span><br><span class="line">    <span class="keyword">this</span>.delegate = parent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里创建了一个<code>BeanDefinitionParserDelegate</code>示例，解析XML的过程就是委托它完成的，我们不关心它是怎样解析XML的，我们只关心是怎么加载类的，所以就要看<code>parseBeanDefinitions(root, this.delegate)</code>方法了。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">parseBeanDefinitions</span><span class="params">(Element root, BeanDefinitionParserDelegate delegate)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (delegate.isDefaultNamespace(root)) &#123;</span><br><span class="line">        NodeList nl = root.getChildNodes();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nl.getLength(); i++) &#123;</span><br><span class="line">            Node node = nl.item(i);</span><br><span class="line">            <span class="keyword">if</span> (node <span class="keyword">instanceof</span> Element) &#123;</span><br><span class="line">                Element ele = (Element) node;</span><br><span class="line">                <span class="keyword">if</span> (delegate.isDefaultNamespace(ele)) &#123;</span><br><span class="line">                    parseDefaultElement(ele, delegate);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    delegate.parseCustomElement(ele);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        delegate.parseCustomElement(root);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们看到最终解析XML元素的是<code>delegate.parseCustomElement(ele)</code>方法，最终会走到一下方法.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> BeanDefinition <span class="title">parseCustomElement</span><span class="params">(Element ele, BeanDefinition containingBd)</span> </span>&#123;</span><br><span class="line">    String namespaceUri = getNamespaceURI(ele);</span><br><span class="line">    NamespaceHandler handler = <span class="keyword">this</span>.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);</span><br><span class="line">    <span class="keyword">if</span> (handler == <span class="keyword">null</span>) &#123;</span><br><span class="line">        error(<span class="string">"Unable to locate Spring NamespaceHandler for XML schema namespace ["</span> + namespaceUri + <span class="string">"]"</span>, ele);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> handler.parse(ele, <span class="keyword">new</span> ParserContext(<span class="keyword">this</span>.readerContext, <span class="keyword">this</span>, containingBd));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里会根据不同的XML节点，会委托<code>NamespaceHandlerSupport</code>找出合适的<code>BeanDefinitionParser</code>，如果我们配置了<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;context:component-scan</span><br><span class="line">	base-<span class="keyword">package</span>=<span class="string">"com.geeekr.service,com.geeekr.dao"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>那么对应<code>BeanDefinitionParser</code>就是<code>org.springframework.context.annotation.ComponentScanBeanDefinitionParser</code>，来看看它的<code>parse</code>方法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> BeanDefinition <span class="title">parse</span><span class="params">(Element element, ParserContext parserContext)</span> </span>&#123;</span><br><span class="line">    String[] basePackages = StringUtils.tokenizeToStringArray(element.getAttribute(BASE_PACKAGE_ATTRIBUTE),</span><br><span class="line">            ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Actually scan for bean definitions and register them.</span></span><br><span class="line">    ClassPathBeanDefinitionScanner scanner = configureScanner(parserContext, element);</span><br><span class="line">    Set&lt;BeanDefinitionHolder&gt; beanDefinitions = scanner.doScan(basePackages);</span><br><span class="line">    registerComponents(parserContext.getReaderContext(), beanDefinitions, element);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>不难看出这里定义了一个<code>ClassPathBeanDefinitionScanner</code>，通过它去扫描包中的类文件，<strong><em>注意：这里是类文件而不是类，因为现在这些类还没有被加载，只是ClassLoader能找到这些class的路径而已。</em></strong>到目前为止，感觉真想距离我们越来越近了。顺着继续往下摸。进入<code>doSacn</code>方法里，映入眼帘的又是一大坨代码，但是我们只关心观点的部分。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Set&lt;BeanDefinitionHolder&gt; <span class="title">doScan</span><span class="params">(String... basePackages)</span> </span>&#123;</span><br><span class="line">    Assert.notEmpty(basePackages, <span class="string">"At least one base package must be specified"</span>);</span><br><span class="line">    Set&lt;BeanDefinitionHolder&gt; beanDefinitions = <span class="keyword">new</span> LinkedHashSet&lt;BeanDefinitionHolder&gt;();</span><br><span class="line">    <span class="keyword">for</span> (String basePackage : basePackages) &#123;</span><br><span class="line">        Set&lt;BeanDefinition&gt; candidates = findCandidateComponents(basePackage);</span><br><span class="line">        <span class="keyword">for</span> (BeanDefinition candidate : candidates) &#123;</span><br><span class="line">            ScopeMetadata scopeMetadata = <span class="keyword">this</span>.scopeMetadataResolver.resolveScopeMetadata(candidate);</span><br><span class="line">            candidate.setScope(scopeMetadata.getScopeName());</span><br><span class="line">            String beanName = <span class="keyword">this</span>.beanNameGenerator.generateBeanName(candidate, <span class="keyword">this</span>.registry);</span><br><span class="line">            <span class="keyword">if</span> (candidate <span class="keyword">instanceof</span> AbstractBeanDefinition) &#123;</span><br><span class="line">                postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (candidate <span class="keyword">instanceof</span> AnnotatedBeanDefinition) &#123;</span><br><span class="line">                AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (checkCandidate(beanName, candidate)) &#123;</span><br><span class="line">                BeanDefinitionHolder definitionHolder = <span class="keyword">new</span> BeanDefinitionHolder(candidate, beanName);</span><br><span class="line">                definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, <span class="keyword">this</span>.registry);</span><br><span class="line">                beanDefinitions.add(definitionHolder);</span><br><span class="line">                registerBeanDefinition(definitionHolder, <span class="keyword">this</span>.registry);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> beanDefinitions;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>一眼就能看出是通过<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Set&lt;BeanDefinition&gt; candidates = findCandidateComponents(basePackage);</span><br></pre></td></tr></table></figure></p>
+<p>有时候不得不佩服这些外国人起名字的功力，把扫描出来的类叫做candidates(候选人)；真是不服不行啊，这种名字真的很容易理解有不有？哈哈，貌似扯远了。继续往下看。这里只列出方法的主题部分。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Set&lt;BeanDefinition&gt; <span class="title">findCandidateComponents</span><span class="params">(String basePackage)</span> </span>&#123;</span><br><span class="line">    Set&lt;BeanDefinition&gt; candidates = <span class="keyword">new</span> LinkedHashSet&lt;BeanDefinition&gt;();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +</span><br><span class="line">                resolveBasePackage(basePackage) + <span class="string">"/"</span> + <span class="keyword">this</span>.resourcePattern;</span><br><span class="line">        Resource[] resources = <span class="keyword">this</span>.resourcePatternResolver.getResources(packageSearchPath);</span><br><span class="line">        <span class="keyword">boolean</span> traceEnabled = logger.isTraceEnabled();</span><br><span class="line">        <span class="keyword">boolean</span> debugEnabled = logger.isDebugEnabled();</span><br><span class="line">        <span class="keyword">for</span> (Resource resource : resources) &#123;</span><br><span class="line">            <span class="keyword">if</span> (traceEnabled) &#123;</span><br><span class="line">                logger.trace(<span class="string">"Scanning "</span> + resource);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (resource.isReadable()) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    MetadataReader metadataReader = <span class="keyword">this</span>.metadataReaderFactory.getMetadataReader(resource);</span><br><span class="line">                    <span class="keyword">if</span> (isCandidateComponent(metadataReader)) &#123;</span><br><span class="line">                        ScannedGenericBeanDefinition sbd = <span class="keyword">new</span> ScannedGenericBeanDefinition(metadataReader);</span><br><span class="line">                        sbd.setResource(resource);</span><br><span class="line">                        sbd.setSource(resource);</span><br></pre></td></tr></table></figure></p>
+<p>先看这两句：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + resolveBasePackage(basePackage) + <span class="string">"/"</span> + <span class="keyword">this</span>.resourcePattern;</span><br></pre></td></tr></table></figure></p>
+<p>假设我们配置的需要扫描的包名为<code>com.geeekr.service</code>，那么<code>packageSearchPath</code>的值就是<code>classpath*:com.geeekr.service/**/*.class</code>，意思就是com.geeekr.service包(包括子包)下所有class文件；如果配置的是<code>*</code>，那么<code>packageSearchPath</code>的值就是<code>classpath*:*/**/*.class</code>。这里的表达式是Spring自己定义的。Spring会根据这种表达式找出相关的class文件。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Resource[] resources = <span class="keyword">this</span>.resourcePatternResolver.getResources(packageSearchPath);</span><br></pre></td></tr></table></figure></p>
+<p>这一句就把相关class文件加载出来了，那我们就要看看，Spring究竟是如何把class文件找到的了。首先看看<code>resourcePatternResolver</code>的定义:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> ResourcePatternResolver resourcePatternResolver = <span class="keyword">new</span> PathMatchingResourcePatternResolver();</span><br></pre></td></tr></table></figure></p>
+<p>进入<code>getResources</code>方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">public</span> Resource[] getResources(String locationPattern) <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    Assert.notNull(locationPattern, <span class="string">"Location pattern must not be null"</span>);</span><br><span class="line">    <span class="keyword">if</span> (locationPattern.startsWith(CLASSPATH_ALL_URL_PREFIX)) &#123;</span><br><span class="line">        <span class="comment">// a class path resource (multiple resources for same name possible)</span></span><br><span class="line">        <span class="keyword">if</span> (getPathMatcher().isPattern(locationPattern.substring(CLASSPATH_ALL_URL_PREFIX.length()))) &#123;</span><br><span class="line">            <span class="comment">// a class path resource pattern</span></span><br><span class="line">            <span class="keyword">return</span> findPathMatchingResources(locationPattern);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// all class path resources with the given name</span></span><br><span class="line">            <span class="keyword">return</span> findAllClassPathResources(locationPattern.substring(CLASSPATH_ALL_URL_PREFIX.length()));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Only look for a pattern after a prefix here</span></span><br><span class="line">        <span class="comment">// (to not get fooled by a pattern symbol in a strange prefix).</span></span><br><span class="line">        <span class="keyword">int</span> prefixEnd = locationPattern.indexOf(<span class="string">":"</span>) + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (getPathMatcher().isPattern(locationPattern.substring(prefixEnd))) &#123;</span><br><span class="line">            <span class="comment">// a file pattern</span></span><br><span class="line">            <span class="keyword">return</span> findPathMatchingResources(locationPattern);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// a single resource with the given name</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Resource[] &#123;getResourceLoader().getResource(locationPattern)&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里会先判断表达式是否以<code>classpath*:</code>开头。前面我们看到Spring已经给我们添加了这个头，这里当然符合条件了。接着会进入<code>findPathMatchingResources</code>方法。在这里又把<code>**/*.class</code>去掉了，然后在调用<code>getResources</code>方法，然后在进入<code>findAllClassPathResources</code>方法。这里的参数只剩下包名了例如<code>com/geeekr/service/</code>。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Resource[] findAllClassPathResources(String location) <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    String path = location;</span><br><span class="line">    <span class="keyword">if</span> (path.startsWith(<span class="string">"/"</span>)) &#123;</span><br><span class="line">        path = path.substring(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    ClassLoader cl = getClassLoader();</span><br><span class="line">    Enumeration&lt;URL&gt; resourceUrls = (cl != <span class="keyword">null</span> ? cl.getResources(path) : ClassLoader.getSystemResources(path));</span><br><span class="line">    Set&lt;Resource&gt; result = <span class="keyword">new</span> LinkedHashSet&lt;Resource&gt;(<span class="number">16</span>);</span><br><span class="line">    <span class="keyword">while</span> (resourceUrls.hasMoreElements()) &#123;</span><br><span class="line">        URL url = resourceUrls.nextElement();</span><br><span class="line">        result.add(convertClassLoaderURL(url));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result.toArray(<span class="keyword">new</span> Resource[result.size()]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>真相大白了，Spring也是用的<code>ClassLoader</code>加载的class文件。一路追踪，原始的ClassLoader是<code>Thread.currentThread().getContextClassLoader();</code>。到此为止，就拿到class文件了。<br>Spring会将class信息封装成<code>BeanDefinition</code>，然后再放进<code>DefaultListableBeanFactory</code>的<code>beanDefinitionMap</code>中。</p>
+<p>拿到了class文件后，就要看看Spring是如何装配bean的了，下一节，继续看。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://liuguili.xyz/read-spring-source-1-how-to-load-bean/" data-id="cik557qca0002ld2ebygfjomy" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">
+- Spring</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/read-spring-source-two-beans-initialization/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          看看Spring的源码(二)——bean实例化
+        
+      </div>
+    </a>
+  
+  
+    <a href="/gui-bing-pai-xu-merge-sort/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">归并排序（Merge sort）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Java集合-ArrayList-java/">
+- Java
+- Java集合
+- ArrayList
+- java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Java集合-LinkedList-java/">
+- Java
+- Java集合
+- LinkedList
+- java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac-SVN/">
+- Mac
+- SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac-shell/">
+- Mac
+- shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL-字符/">
+- MySQL
+- 字符</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">
+- Spring</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN-blog-主机-DigitalOcean-shadowsocks-Shadowsocks/">
+- VPN
+- blog
+- 主机
+- DigitalOcean
+- shadowsocks
+- Shadowsocks</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game-2048/">
+- game
+- 2048</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/google-ghost/">
+- google
+- ghost</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/life-geeekr-博客/">
+- life
+- geeekr
+- 博客</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shadowsocks-翻墙-CentOS-Shadowsocks/">
+- shadowsocks
+- 翻墙
+- CentOS
+- Shadowsocks</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存-Java-线程安全-Thread-save-java/">
+- 内存
+- Java
+- 线程安全
+- Thread-save
+- java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存-Memcached-缓存/">
+- 内存
+- Memcached
+- 缓存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法-sort-排序/">
+- 算法
+- sort
+- 排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/软件破解/">
+- 软件破解</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Java-Java集合-ArrayList-java/" style="font-size: 10px;">
+- Java
+- Java集合
+- ArrayList
+- java</a> <a href="/tags/Java-Java集合-LinkedList-java/" style="font-size: 10px;">
+- Java
+- Java集合
+- LinkedList
+- java</a> <a href="/tags/Mac-SVN/" style="font-size: 10px;">
+- Mac
+- SVN</a> <a href="/tags/Mac-shell/" style="font-size: 10px;">
+- Mac
+- shell</a> <a href="/tags/MySQL-字符/" style="font-size: 10px;">
+- MySQL
+- 字符</a> <a href="/tags/Spring/" style="font-size: 20px;">
+- Spring</a> <a href="/tags/VPN-blog-主机-DigitalOcean-shadowsocks-Shadowsocks/" style="font-size: 10px;">
+- VPN
+- blog
+- 主机
+- DigitalOcean
+- shadowsocks
+- Shadowsocks</a> <a href="/tags/game-2048/" style="font-size: 10px;">
+- game
+- 2048</a> <a href="/tags/google-ghost/" style="font-size: 10px;">
+- google
+- ghost</a> <a href="/tags/life-geeekr-博客/" style="font-size: 10px;">
+- life
+- geeekr
+- 博客</a> <a href="/tags/shadowsocks-翻墙-CentOS-Shadowsocks/" style="font-size: 10px;">
+- shadowsocks
+- 翻墙
+- CentOS
+- Shadowsocks</a> <a href="/tags/内存-Java-线程安全-Thread-save-java/" style="font-size: 10px;">
+- 内存
+- Java
+- 线程安全
+- Thread-save
+- java</a> <a href="/tags/内存-Memcached-缓存/" style="font-size: 10px;">
+- 内存
+- Memcached
+- 缓存</a> <a href="/tags/算法-sort-排序/" style="font-size: 10px;">
+- 算法
+- sort
+- 排序</a> <a href="/tags/软件破解/" style="font-size: 10px;">
+- 软件破解</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">September 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">August 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">July 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">June 2014</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/writing-websocket-server-use-javascript/">Writing WebSocket Server use Javascript</a>
+          </li>
+        
+          <li>
+            <a href="/install-redis-on-debian/">Install Redis on Debian</a>
+          </li>
+        
+          <li>
+            <a href="/install-ghost-on-centos/">CentOS 搭建 Ghost 博客</a>
+          </li>
+        
+          <li>
+            <a href="/fix-maven-java-version-mac-osx/">Mac如何更改maven的java版本</a>
+          </li>
+        
+          <li>
+            <a href="/istat-menu-5-02-zhu-ce-ma/">istat menu 5.11 注册码</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 liuguili<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>

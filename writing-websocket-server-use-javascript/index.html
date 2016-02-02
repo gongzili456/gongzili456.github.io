@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Writing WebSocket Server use Javascript | Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="##What are WebSocket?
+根据RFC 6455文件对 WebSocket 的描述，我们可以了解到：WebSocket 是『在受控环境中运行不受信任代码的一个客户端到一个从该代码已经选择加入通信的远程主机间的全双工通信』。
+
+The WebSocket Protocol enables two-way communication between a client   running">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Writing WebSocket Server use Javascript">
+<meta property="og:url" content="http://liuguili.xyz/writing-websocket-server-use-javascript/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="##What are WebSocket?
+根据RFC 6455文件对 WebSocket 的描述，我们可以了解到：WebSocket 是『在受控环境中运行不受信任代码的一个客户端到一个从该代码已经选择加入通信的远程主机间的全双工通信』。
+
+The WebSocket Protocol enables two-way communication between a client   running">
+<meta property="og:updated_time" content="2015-08-04T02:22:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Writing WebSocket Server use Javascript">
+<meta name="twitter:description" content="##What are WebSocket?
+根据RFC 6455文件对 WebSocket 的描述，我们可以了解到：WebSocket 是『在受控环境中运行不受信任代码的一个客户端到一个从该代码已经选择加入通信的远程主机间的全双工通信』。
+
+The WebSocket Protocol enables two-way communication between a client   running">
+  
+    <link rel="alternative" href="/atom.xml" title="Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://liuguili.xyz"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-writing-websocket-server-use-javascript" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/writing-websocket-server-use-javascript/" class="article-date">
+  <time datetime="2015-08-03T07:39:33.000Z" itemprop="datePublished">2015-08-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Writing WebSocket Server use Javascript
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##What are WebSocket?</p>
+<p>根据<a href="https://tools.ietf.org/html/rfc6455" target="_blank" rel="external">RFC 6455</a>文件对 WebSocket 的描述，我们可以了解到：WebSocket 是『在受控环境中运行不受信任代码的一个客户端到一个从该代码已经选择加入通信的远程主机间的全双工通信』。</p>
+<blockquote>
+<p>The WebSocket Protocol enables two-way communication between a client<br>   running untrusted code in a controlled environment to a remote host<br>   that has opted-in to communications from that code.</p>
+</blockquote>
+<h2 id="Why_would_I_need_WebSocket_3F"><a href="#Why_would_I_need_WebSocket_3F" class="headerlink" title="Why would I need WebSocket?"></a>Why would I need WebSocket?</h2><p>想象一下这个情景，你在网页上向你的好友发了一条消息，然后你就等待对方回应，但是你不知道对方什么时候才会给你回复，你可能会一直刷新页面知道你看到对方的回复，这真是太累了。这时你想如果消息能主动的推倒你的面前那该多好啊。但是HTTP协议是无状态的，每次传递消息都必须新建连接，所以HTTP无法实现这个需求。WebSocket 就是用来解决需要进行实时通信应用的，比如股票查询等。</p>
+<h2 id="How_do_they_work_3F"><a href="#How_do_they_work_3F" class="headerlink" title="How do they work?"></a>How do they work?</h2><p>WebSocket 分两个阶段，握手和数据传输（handshake and the data transfer）。</p>
+<h3 id="Handshake"><a href="#Handshake" class="headerlink" title="Handshake"></a>Handshake</h3><p>握手就是建立 Client 到 Server 的互信关系，从而建立连接。<br>握手的过程是基于HTTP协议实现的，这要求 Client 和 Server 使用指定的 Header 来实现。</p>
+<h4 id="Client_Header"><a href="#Client_Header" class="headerlink" title="Client Header"></a>Client Header</h4><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="request">GET <span class="string">/chat</span> HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span>: <span class="string">server.example.com</span></span><br><span class="line"><span class="attribute">Upgrade</span>: <span class="string">websocket</span></span><br><span class="line"><span class="attribute">Connection</span>: <span class="string">Upgrade</span></span><br><span class="line"><span class="attribute">Sec-WebSocket-Key</span>: <span class="string">dGhlIHNhbXBsZSBub25jZQ==</span></span><br><span class="line"><span class="attribute">Origin</span>: <span class="string">http://example.com</span></span><br><span class="line"><span class="attribute">Sec-WebSocket-Protocol</span>: <span class="string">chat, superchat</span></span><br><span class="line"><span class="attribute">Sec-WebSocket-Version</span>: <span class="string">13</span></span><br></pre></td></tr></table></figure>
+<h4 id="Server_Header"><a href="#Server_Header" class="headerlink" title="Server Header"></a>Server Header</h4><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="status">HTTP/1.1 <span class="number">101</span> Switching Protocols</span></span><br><span class="line"><span class="attribute">Upgrade</span>: <span class="string">websocket</span></span><br><span class="line"><span class="attribute">Connection</span>: <span class="string">Upgrade</span></span><br><span class="line"><span class="attribute">Sec-WebSocket-Accept</span>: <span class="string">s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</span></span><br><span class="line"><span class="attribute">Sec-WebSocket-Protocol</span>: <span class="string">chat</span></span><br></pre></td></tr></table></figure>
+<p>这里需要主意的一点就是：Client 发起握手请求，将<code>Sec-WebSocket-Key</code>发给 Server，然后 Server 将其与 <code>258EAFA5-E914-47DA-95CA-C5AB0DC85B11</code> 拼起来（在本例子中将是 “s3pPLMBiTxaQ9kYGzzhZRbK+xOo=258EAFA5-E914-47DA-95CA-C5AB0DC85B11” ）。然后进行 <code>SHA-1 hash</code>，再将其结果进行base64编码。</p>
+<h2 id="Data_Frame"><a href="#Data_Frame" class="headerlink" title="Data Frame"></a>Data Frame</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> <span class="number">0</span>                   <span class="number">1</span>                   <span class="number">2</span>                   <span class="number">3</span></span><br><span class="line"> <span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span> <span class="number">7</span> <span class="number">8</span> <span class="number">9</span> <span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span> <span class="number">7</span> <span class="number">8</span> <span class="number">9</span> <span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span> <span class="number">7</span> <span class="number">8</span> <span class="number">9</span> <span class="number">0</span> <span class="number">1</span></span><br><span class="line">+-+-+-+-+-------+-+-------------+-------------------------------+</span><br><span class="line">|F|R|R|R| opcode|M| Payload len |    Extended payload length    |</span><br><span class="line">|I|S|S|S|  (<span class="number">4</span>)  |A|     (<span class="number">7</span>)     |             (<span class="number">16</span>/<span class="number">64</span>)           |</span><br><span class="line">|N|V|V|V|       |S|             |   (<span class="keyword">if</span> payload len==<span class="number">126</span>/<span class="number">127</span>)   |</span><br><span class="line">| |<span class="number">1</span>|<span class="number">2</span>|<span class="number">3</span>|       |K|             |                               |</span><br><span class="line">+-+-+-+-+-------+-+-------------+ - - - - - - - - - - - - - - - +</span><br><span class="line">|     Extended payload length continued, <span class="keyword">if</span> payload len == <span class="number">127</span>  |</span><br><span class="line">+ - - - - - - - - - - - - - - - +-------------------------------+</span><br><span class="line">|                               |Masking-key, <span class="keyword">if</span> MASK <span class="built_in">set</span> to <span class="number">1</span>  |</span><br><span class="line">+-------------------------------+-------------------------------+</span><br><span class="line">| Masking-key (continued)       |          Payload Data         |</span><br><span class="line">+-------------------------------- - - - - - - - - - - - - - - - +</span><br><span class="line">:                     Payload Data continued ...                :</span><br><span class="line">+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +</span><br><span class="line">|                     Payload Data continued ...                |</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+<ul>
+<li>FIN: 1bit<br>指示这个消息是否是最否一个片段；</li>
+<li>RSV1, RSV2, RSV3: 每个1 bit。默认为零，保留位，可自己实现定义；</li>
+<li>Opcode: 4 bits 定义 payload data 的解释，如果收到一个未知的操作码，接收端点必须 <em>将 WebSokcket 连接视为失败</em>。 定义了以下值。<ol>
+<li>%x0 代表一个继续帧</li>
+<li>%x1 代表一个文本帧</li>
+<li>%x2 代表一个二进制帧</li>
+<li>%x3-7 保留用于未来的非控制帧</li>
+<li>%x8 代表连接关闭</li>
+<li>%x9 代表ping</li>
+<li>%xA 代表pong</li>
+<li>%xB-F 保留用于未来的控制帧</li>
+</ol>
+</li>
+<li><p>Mask: 1 bit<br>定义 “负载数据”是否是经过掩码的。 如果设置为1，一个掩码键出现在masking-key，且这个是用于根据 5.3 节解掩码(unmask)“负载数据”。 从客户端发送到服务器的所有帧有这个位设置为1。</p>
+</li>
+<li><p>Payload length: 7 bits, 7+16 bits, 或者 7+64 bits：<br>“负载数据”的长度，以字节为单位：如果是 0-125，这是负载长度。 如果是 126，之后的两字节解释为一个16位的无符号整数是负载长度。 如果是127，之后的8字节解释为一个64位的无符号整数（最高有效位必须是0）是负载长度。 多字节长度数量以网络字节顺序来表示。 注意，在所有情况下，最小数量的字节必须用于编码长度，例如，一个124字节长的字符串的长度不能被编码为序列126，0，124。 负载长度是“扩展数据”长度+“应用数据”长度。 “扩展数据”长度可能是零，在这种情况下，负载长度是“应用数据”长度。</p>
+</li>
+<li><p>Masking-key: 0 or 4 bytes：<br>客户端发送到服务器的所有帧通过一个包含在帧中的32位值来掩码。 如果mask位设置为1，则该字段存在，如果mask位设置为0，则该字段缺失。 详细信息请参见5.3节 客户端到服务器掩码。</p>
+</li>
+<li><p>Payload data: (x+y) bytes：<br>“负载数据”定义为“扩展数据”连接“应用数据”。</p>
+</li>
+<li><p>Extension data: x bytes：<br>“扩展数据”是 0 字节除非已经协商了一个扩展。 任何扩展必须指定“扩展数据”的长度，或长度是如何计算的，以及扩展如何使用必须在打开阶段握手期间协商。 如果存在，“扩展数据”包含在总负载长度中。</p>
+</li>
+<li><p>Application data: y bytes：<br>任意的“应用数据”，占用“扩展数据”之后帧的剩余部分。 “应用数据”的长度等于负载长度减去“扩展数据”长度。</p>
+</li>
+</ul>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>代码详见<a href="https://github.com/gongzili456/websocket-example/tree/master" target="_blank" rel="external">我的github</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://liuguili.xyz/writing-websocket-server-use-javascript/" data-id="cik557qdb000wld2efzmg7r1x" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/install-redis-on-debian/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Install Redis on Debian</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Java集合-ArrayList-java/">
+- Java
+- Java集合
+- ArrayList
+- java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-Java集合-LinkedList-java/">
+- Java
+- Java集合
+- LinkedList
+- java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac-SVN/">
+- Mac
+- SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac-shell/">
+- Mac
+- shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL-字符/">
+- MySQL
+- 字符</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">
+- Spring</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN-blog-主机-DigitalOcean-shadowsocks-Shadowsocks/">
+- VPN
+- blog
+- 主机
+- DigitalOcean
+- shadowsocks
+- Shadowsocks</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game-2048/">
+- game
+- 2048</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/google-ghost/">
+- google
+- ghost</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/life-geeekr-博客/">
+- life
+- geeekr
+- 博客</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shadowsocks-翻墙-CentOS-Shadowsocks/">
+- shadowsocks
+- 翻墙
+- CentOS
+- Shadowsocks</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存-Java-线程安全-Thread-save-java/">
+- 内存
+- Java
+- 线程安全
+- Thread-save
+- java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存-Memcached-缓存/">
+- 内存
+- Memcached
+- 缓存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法-sort-排序/">
+- 算法
+- sort
+- 排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/软件破解/">
+- 软件破解</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Java-Java集合-ArrayList-java/" style="font-size: 10px;">
+- Java
+- Java集合
+- ArrayList
+- java</a> <a href="/tags/Java-Java集合-LinkedList-java/" style="font-size: 10px;">
+- Java
+- Java集合
+- LinkedList
+- java</a> <a href="/tags/Mac-SVN/" style="font-size: 10px;">
+- Mac
+- SVN</a> <a href="/tags/Mac-shell/" style="font-size: 10px;">
+- Mac
+- shell</a> <a href="/tags/MySQL-字符/" style="font-size: 10px;">
+- MySQL
+- 字符</a> <a href="/tags/Spring/" style="font-size: 20px;">
+- Spring</a> <a href="/tags/VPN-blog-主机-DigitalOcean-shadowsocks-Shadowsocks/" style="font-size: 10px;">
+- VPN
+- blog
+- 主机
+- DigitalOcean
+- shadowsocks
+- Shadowsocks</a> <a href="/tags/game-2048/" style="font-size: 10px;">
+- game
+- 2048</a> <a href="/tags/google-ghost/" style="font-size: 10px;">
+- google
+- ghost</a> <a href="/tags/life-geeekr-博客/" style="font-size: 10px;">
+- life
+- geeekr
+- 博客</a> <a href="/tags/shadowsocks-翻墙-CentOS-Shadowsocks/" style="font-size: 10px;">
+- shadowsocks
+- 翻墙
+- CentOS
+- Shadowsocks</a> <a href="/tags/内存-Java-线程安全-Thread-save-java/" style="font-size: 10px;">
+- 内存
+- Java
+- 线程安全
+- Thread-save
+- java</a> <a href="/tags/内存-Memcached-缓存/" style="font-size: 10px;">
+- 内存
+- Memcached
+- 缓存</a> <a href="/tags/算法-sort-排序/" style="font-size: 10px;">
+- 算法
+- sort
+- 排序</a> <a href="/tags/软件破解/" style="font-size: 10px;">
+- 软件破解</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">September 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">August 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">July 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">June 2014</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/writing-websocket-server-use-javascript/">Writing WebSocket Server use Javascript</a>
+          </li>
+        
+          <li>
+            <a href="/install-redis-on-debian/">Install Redis on Debian</a>
+          </li>
+        
+          <li>
+            <a href="/install-ghost-on-centos/">CentOS 搭建 Ghost 博客</a>
+          </li>
+        
+          <li>
+            <a href="/fix-maven-java-version-mac-osx/">Mac如何更改maven的java版本</a>
+          </li>
+        
+          <li>
+            <a href="/istat-menu-5-02-zhu-ce-ma/">istat menu 5.11 注册码</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 liuguili<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>
