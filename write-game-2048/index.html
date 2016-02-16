@@ -1,0 +1,19 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 动手写游戏--2048 · Blog</title><meta name="description" content="动手写游戏--2048 - liuguili"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type="text/css"></head><body><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="http://weibo.com/sunchongsheng" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/pinggod" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">动手写游戏--2048</h1><div class="post-meta"><div class="post-time">Oct 17, 2014</div></div><div class="post-content"><p>2048游戏大家都很熟悉了，今天来练练手。<br><img src="http://geeekr.qiniudn.com/images/6/71/b03d53e397c9f1e46ca0eb9a89e00.png" alt=""></p>
+<p>###规则:</p>
+<ul>
+<li>在一个4*4的方格中</li>
+<li>同一行数字向一端移动，且相邻两个相同的数字相加合并，</li>
+<li>再在随机位置产生一个随机数字2或4，</li>
+<li>当没有空余格（输）或最大值为2048（胜）时游戏结束，</li>
+</ul>
+<p>###设计</p>
+<p>该游戏最关键的逻辑是如何将每一行移到同一方向，且将相邻等值数字相加合并。</p>
+<p>可以把所有方块用二维数组存储，假设我们拿类<code>Cell</code>表示每个方块，那我们的数据结构就是<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cell[<span class="link_label"></span>][<span class="link_reference"></span>] cells = new Cell[<span class="link_label">4</span>][<span class="link_reference">4</span>]</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://geeekr.qiniudn.com/images/2/8b/5da1ba76d21cf10a430f454344b7d.png" alt=""></p>
+<p>由于游戏涉及到上下左右四个方向，难点就在于如何获取横向和纵向的每一排数，横向当然好取，可是纵向就麻烦了，这还牵扯到移动方向的问题，就更复杂了，</p>
+<p>如果能有一个方式让我们用相同的方式就能取到横向或纵向的任意一行就好了，方法当然是有的。这就涉及到数学中的三角函数了。大家可以自行Google“三角函数和差公式”。<br>也可直接进入<a href="http://http://www.cnblogs.com/ywxgod/archive/2010/08/06/1793609.html" target="_blank" rel="external">我的参考</a></p>
+<p><img src="http://geeekr.qiniudn.com/images/4/c0/defa934db419c6aef2f1ba3277ef1.png" alt=""></p>
+<p>如上图，经过旋转，我们很容易能根据X的值就能得到任意行数字了，当我们对该行操作完成后在经过旋转就恢复到原来样子了，注意整个操作是同一方向旋转360度。</p>
+<p>###总结<br>解决了获取任意行数字的问题，剩下的就简单了。也就不多说了，具体可以看我的代码：<a href="https://github.com/gongzili456/2048" target="_blank" rel="external">Github</a></p>
+<p><img src="http://geeekr.qiniudn.com/images/9/95/1c8bfddabe33b276faaba401d14f5.png" alt=""></p>
+</div></article></div></section><footer><div class="paginator"><a href="/istat-menu-5-02-zhu-ce-ma/" class="prev">上一篇</a><a href="/san-jiao-han-shu-he-chai-gong-shi/" class="next">下一篇</a></div><div class="copyright"><p>© 2015 - 2016 <a href="http://geeekr.com">liuguili</a>, unless otherwise noted.</p></div></footer><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script><script>var _hmt = _hmt || [];(function() {var hm = document.createElement("script");hm.src = "//hm.baidu.com/hm.js?a36e15d9e2adec9a21fcdd9f686b1ed2";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s);})();</script><script src="https://cdn.bootcss.com/mathjax/2.5.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></body></html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 从内存角度理解Java线程安全 · Blog</title><meta name="description" content="从内存角度理解Java线程安全 - liuguili"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type="text/css"></head><body><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="http://weibo.com/sunchongsheng" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/pinggod" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">从内存角度理解Java线程安全</h1><div class="post-meta"><div class="post-time">Sep 1, 2014</div></div><div class="post-content"><p>线程安全：无非就是保证多个线程有序的访问或修改共享数据。</p>
+<p>JVM定义了自己的内存模型，对开发者屏蔽了平台操作内存的细节。在Java中，线程之间是无法直接通信的，只能通过共享对象才能相互通信。下面这张图就诠释了Java中线程是如何通信的。</p>
+<p><img src="http://geeekr.qiniudn.com/images/2/c4/52d147bf0d09b14b770d3990740cb.png" alt=""></p>
+<p>上图包含了连个概念：可见性，有序性。</p>
+<p>####可见性<br>线程A从主内存中拷贝变量x的副本到本地内存中，然后在本地内存中修改x的值，jvm控制将x的值同步到主内存中。线程B也是如此。两个线程就是这样通过主内存共享对象实现两者的通信的。</p>
+<p>但是如果他们的执行顺序出了差错，那么x的值就会出错。</p>
+<p>例如：</p>
+<ol>
+<li>线程A拷贝x副本到本地内存。</li>
+<li>线程A对x的值+1，x的值为11。</li>
+<li>线程B拷贝x副本到本地内存。</li>
+<li>线程B对x的值-1，x的值为9。</li>
+<li>线程A同步到主内存，主内存的x=11。</li>
+<li>线程B同步到主内存，主内存的X=9。</li>
+</ol>
+<p>####有序性<br>所以要保证同一时刻只有一个线程能操作数据。</p>
+<p>Java引入了synchronized关键字将一段代码互斥，保证了线程访问数据的顺序。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">synchronized(<span class="operator"><span class="keyword">lock</span>)&#123;  </span><br><span class="line">	<span class="keyword">some</span> code...  </span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>如果synchronized关键字与static关键字同时用则锁对象为class对象，否则所对象为实例对象。</p>
+</div></article></div></section><footer><div class="paginator"><a href="/memcachednei-cun-fen-pei/" class="prev">上一篇</a><a href="/tree-command-on-mac/" class="next">下一篇</a></div><div class="copyright"><p>© 2015 - 2016 <a href="http://geeekr.com">liuguili</a>, unless otherwise noted.</p></div></footer><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script><script>var _hmt = _hmt || [];(function() {var hm = document.createElement("script");hm.src = "//hm.baidu.com/hm.js?a36e15d9e2adec9a21fcdd9f686b1ed2";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s);})();</script><script src="https://cdn.bootcss.com/mathjax/2.5.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></body></html>

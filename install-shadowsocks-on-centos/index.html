@@ -1,0 +1,27 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Install Shadowsocks on Centos · Blog</title><meta name="description" content="Install Shadowsocks on Centos - liuguili"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" type="text/css"></head><body><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="http://weibo.com/sunchongsheng" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/pinggod" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Install Shadowsocks on Centos</h1><div class="post-meta"><div class="post-time">Jul 15, 2014</div></div><div class="post-content"><blockquote>
+<p>身为有理想、有追求的有志青年，出于对自由的向往，怎能甘心接受被围在墙内？</p>
+</blockquote>
+<p><strong><em>so, I do that：</em></strong> </p>
+<blockquote>
+<p>install shadowsocks on my digitalocean VPS</p>
+</blockquote>
+<p>####ready<br>开发者必备之 <em>Development Tools</em><br><br><code>yum groupinstall &#39;Development Tools&#39;</code><br><br><code>yum install git</code></p>
+<p>####do it</p>
+<p><code>git clone https://github.com/madeye/shadowsocks-libev.git</code><br><br><code>cd shadowsocks-libev</code><br><br><em>编译安装三部曲：</em><br><br><code>./configure</code><br><br><code>make</code><br><br><code>make install</code><br></p>
+<p>####use it</p>
+<p><code>nohup /usr/local/bin/ss-server -s IP地址 -p 端口 -k 密码 -m 加密方式 &amp;</code></p>
+<blockquote>
+<ul>
+<li>-s #vps的IP地址</li>
+<li>-p #端口</li>
+<li>-k #自定义的密码</li>
+<li>-m #加密方式，推荐使用aes-256-cfb</li>
+</ul>
+</blockquote>
+<p>示例：<code>nohup /usr/local/bin/ss-server -s 11.22.33.44 -p 12345 -k 12345678 -m aes-256-cfb &amp;</code></p>
+<p>为了方便，加入开机启动：<br><code>echo &quot;nohup /usr/local/bin/ss-server -s 11.22.33.44 -p 12345 -k 12345678 -m aes-256-cfb &amp;&quot; &gt;&gt; /etc/rc.local</code></p>
+<p>android 和 iOS都有Shadowsocks客户端</p>
+<blockquote>
+<p><strong><em>注意：</em></strong><br>当你完成以上所有步骤以后，你可能会很伤心，很难过，因为你的客户端能连上但不能上网。<br><br><strong><em>请不要伤心，也不要难过：</em></strong><br>执行神一样的命令<code>yum update</code>即可。</p>
+</blockquote>
+</div></article></div></section><footer><div class="paginator"><a href="/gui-bing-pai-xu-merge-sort/" class="prev">上一篇</a><a href="/zhu-ji-yi-jing-qian-yi-zhi-jiu-jin-shan/" class="next">下一篇</a></div><div class="copyright"><p>© 2015 - 2016 <a href="http://geeekr.com">liuguili</a>, unless otherwise noted.</p></div></footer><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script><script>var _hmt = _hmt || [];(function() {var hm = document.createElement("script");hm.src = "//hm.baidu.com/hm.js?a36e15d9e2adec9a21fcdd9f686b1ed2";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s);})();</script><script src="https://cdn.bootcss.com/mathjax/2.5.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></body></html>
