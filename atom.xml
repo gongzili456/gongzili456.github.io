@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://geeekr.com/"/>
-  <updated>2015-08-04T02:22:07.000Z</updated>
+  <updated>2016-02-16T08:27:45.000Z</updated>
   <id>http://geeekr.com/</id>
   
   <author>
@@ -13,6 +13,49 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[关于 UITableViewCell 的二三事]]></title>
+    <link href="http://geeekr.com/something-about-uitableviewcell/"/>
+    <id>http://geeekr.com/something-about-uitableviewcell/</id>
+    <published>2016-01-06T15:14:27.000Z</published>
+    <updated>2016-02-16T08:27:45.000Z</updated>
+    <content type="html"><![CDATA[<p>UITableView 使用 UITableViewCell 对象来绘出那些显示的 rows，并将之缓存。 Table View 的 data source 通过 tableView:cellForRowAtIndexPath 方法向 UITableView 提供 UITableViewCell 对象。</p>
+<h3 id="u5178_u578B_u7684_Cell__u5BF9_u8C61"><a href="#u5178_u578B_u7684_Cell__u5BF9_u8C61" class="headerlink" title="典型的 Cell 对象"></a>典型的 Cell 对象</h3><p>一个 Cell 对象包含许多部分，通常会包含文本（text），图片（image） 等。</p>
+<p>下图为一种普通（normally）状态下的 Cell<br><img src="http://7xpuna.com1.z0.glb.clouddn.com/tv_cell_parts.jpg" alt=""></p>
+<p>右边的小区域是附件视图（<code>accessory views</code>），左边为内容区（<code>content view</code>）当需要添加视图到 Cell 的时候，就需要将视图添加的 Cell 的 <code>contentView</code> 属性上。</p>
+<p>下图为编辑模式下的一种示例<br><img src="http://7xpuna.com1.z0.glb.clouddn.com/tv_cell_parts_edit.jpg" alt=""></p>
+<p><code>editing control</code> 可以是 <code>deletion control</code> 和 <code>insertion control</code> 的一种；</p>
+<h3 id="u4F7F_u7528_u9884_u5B9A_u4E49_u98CE_u683C_u7684_Cell"><a href="#u4F7F_u7528_u9884_u5B9A_u4E49_u98CE_u683C_u7684_Cell" class="headerlink" title="使用预定义风格的 Cell"></a>使用预定义风格的 Cell</h3><p>iOS 预置了4种风格的 Cell</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UITableViewCellStyleDefault</span>,</span><br><span class="line"><span class="built_in">UITableViewCellStyleValue1</span>,</span><br><span class="line"><span class="built_in">UITableViewCellStyleValue2</span>,</span><br><span class="line"><span class="built_in">UITableViewCellStyleSubtitle</span></span><br></pre></td></tr></table></figure>
+<p>下图为一种常见的 Cell 风格<br><img src="http://7xpuna.com1.z0.glb.clouddn.com/tv_cell_parts_simple.jpg" alt=""></p>
+<h3 id="u81EA_u5B9A_u4E49_Cell"><a href="#u81EA_u5B9A_u4E49_Cell" class="headerlink" title="自定义 Cell"></a>自定义 Cell</h3><h3 id="u4F7F_u7528_StoryBoard__u52A0_u8F7D_Cell"><a href="#u4F7F_u7528_StoryBoard__u52A0_u8F7D_Cell" class="headerlink" title="使用 StoryBoard 加载 Cell"></a>使用 StoryBoard 加载 Cell</h3><h3 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h3>]]></content>
+    <summary type="html">
+    <![CDATA[<p>UITableView 使用 UITableViewCell 对象来绘出那些显示的 rows，并将之缓存。 Table View 的 data source 通过 tableView:cellForRowAtIndexPath 方法向 UITableView 提供 UITa]]>
+    </summary>
+    
+      <category term="UITableViewCell" scheme="http://geeekr.com/tags/UITableViewCell/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第0天，每天学点iOS]]></title>
+    <link href="http://geeekr.com/0-day/"/>
+    <id>http://geeekr.com/0-day/</id>
+    <published>2016-01-04T13:39:53.000Z</published>
+    <updated>2016-02-16T08:27:45.000Z</updated>
+    <content type="html"><![CDATA[<p>从业以来，还从未挖过坑。想来多少有些遗憾，惶惶不可终日。故今日特挖此坑，以奠流年。 </p>
+<p>本坑的主要目的是为了学习 iOS APP开发，以实现迎娶白富美走向人生巅峰的无上人生理想（每想及次，心中涟漪久久不能平息，哈哈哈哈哈哈）；<br>咳咳，经过高人指点最终确定，本系列的目标就是通过做一个微博客户端。就是下面这个样子：（据高人说这个页面包含了 iOS 曝光率最高的 UITableView 和 UITableViewCell 的使用，二者得一可安天行啊~哈哈哈哈）</p>
+<p><img src="http://7jpt6v.com1.z0.glb.clouddn.com/12.pic_hd.jpg" alt=""></p>
+<h3 id="u6211_u73B0_u6709_u7684_u6280_u80FD_u80CC_u666F_uFF1A"><a href="#u6211_u73B0_u6709_u7684_u6280_u80FD_u80CC_u666F_uFF1A" class="headerlink" title="我现有的技能背景："></a>我现有的技能背景：</h3><p>学 Java 出身，半路出家转了 NodeJs，现在要来学 Swift，对 Swift 停留在能看懂的状态。所以几乎是从零学起了。<br>为了避免太基础而有乏味的语法阶段，所以本系列直接从 UITableViewCell 控件开始。</p>
+<h3 id="u7ED3_u5C3E"><a href="#u7ED3_u5C3E" class="headerlink" title="结尾"></a>结尾</h3><p>就这么多吧，考虑到每天需要 4 个小时的通勤时间，我也不太清楚需要多久才能搞定，但是希望不要超过一个月，哈哈，又有些急性子了。<br>That’s all. ^_^</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>从业以来，还从未挖过坑。想来多少有些遗憾，惶惶不可终日。故今日特挖此坑，以奠流年。 </p>
+<p>本坑的主要目的是为了学习 iOS APP开发，以实现迎娶白富美走向人生巅峰的无上人生理想（每想及次，心中涟漪久久不能平息，哈哈哈哈哈哈）；<br>咳咳，经过高人指点最终确定，]]>
+    </summary>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Writing WebSocket Server use Javascript]]></title>
@@ -754,54 +797,6 @@
       <category term="
 - Mac
 - SVN" scheme="http://geeekr.com/tags/Mac-SVN/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[修改MySQL的字符集]]></title>
-    <link href="http://geeekr.com/change-mysql-character/"/>
-    <id>http://geeekr.com/change-mysql-character/</id>
-    <published>2014-06-16T06:19:50.000Z</published>
-    <updated>2014-12-09T19:23:00.000Z</updated>
-    <content type="html"><![CDATA[<p>编辑MySQL的配置文件</p>
-<p><code>vi /etc/my.cnf</code></p>
-<p>MySQL的配置文件分几个部分，修改字符集需要将一下三个部分修改（即中括号里的内容），其中一些部分可能默认没有，需要自己写入，这样client，mysql，mysqld三个部分的字符集都为utf8了。就不会出现中文乱码的问题了。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[client]&#10;default-character-set=utf8&#10;&#10;[mysql]&#10;default-character-set=utf8&#10;&#10;[mysqld]&#10;character-set-server=utf8</span><br></pre></td></tr></table></figure>]]></content>
-    <summary type="html">
-    <![CDATA[<p>编辑MySQL的配置文件</p>
-<p><code>vi /etc/my.cnf</code></p>
-<p>MySQL的配置文件分几个部分，修改字符集需要将一下三个部分修改（即中括号里的内容），其中一些部分可能默认没有，需要自己写入，这样client，mysql，mysq]]>
-    </summary>
-    
-      <category term="
-- MySQL
-- 字符" scheme="http://geeekr.com/tags/MySQL-%E5%AD%97%E7%AC%A6/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[替换Google字体服务，加速ghost]]></title>
-    <link href="http://geeekr.com/overwrite-google-api/"/>
-    <id>http://geeekr.com/overwrite-google-api/</id>
-    <published>2014-06-15T06:43:45.000Z</published>
-    <updated>2014-09-23T06:50:58.000Z</updated>
-    <content type="html"><![CDATA[<p>用上了强大的ghost以后，又装修了一下门面。<br>安装了<a href="https://github.com/oswaldoacauan/ghostium" target="_blank" rel="external">Ghostium</a>主题。<br><img src="http://geeekr.qiniudn.com/images/1/30/e8cd2a93ec3e76c399321dbbedfe6.png" alt=""></p>
-<p>可是问题来了，Ghostium主题使用Google的字体服务，导致访问博客的时候打开非常慢，这对于网站来说是不能忍受的。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;link href="//fonts.googleapis.com/" rel="dns-prefetch"&gt;</span><br><span class="line">&lt;link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&amp;subset=latin,latin-ext" rel="stylesheet"&gt;</span><br></pre></td></tr></table></figure></p>
-<p>经过一番搜索，终于找到替代Google fonts API的替代方法了。</p>
-<blockquote>
-<p>把fonts.googleapis.com替换为fonts.useso.com就OK了。</p>
-</blockquote>
-<p>据说这是360的服务，修改之后速度确实提升了。</p>
-<p>还有一种方式比较粗暴，就是直接把使用googleapis的服务暴力的注释掉。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- &lt;link href="//fonts.googleapis.com/" rel="dns-prefetch"&gt; --&gt;</span><br></pre></td></tr></table></figure></p>
-<p>但是这种方式有个问题，就是如果没有备用的字体设置，会被浏览器默认的字体替换，可能会影响网站的显示效果。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>用上了强大的ghost以后，又装修了一下门面。<br>安装了<a href="https://github.com/oswaldoacauan/ghostium" target="_blank" rel="external">Ghostium</a>主题。<br><img ]]>
-    </summary>
-    
-      <category term="
-- google
-- ghost" scheme="http://geeekr.com/tags/google-ghost/"/>
     
   </entry>
   

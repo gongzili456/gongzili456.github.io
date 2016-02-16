@@ -2,6 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://geeekr.com/0-day/</loc>
+    <lastmod>2016-02-16T08:27:45.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://geeekr.com/something-about-uitableviewcell/</loc>
+    <lastmod>2016-02-16T08:27:45.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://geeekr.com/istat-menu-5-02-zhu-ce-ma/</loc>
     <lastmod>2015-10-14T08:42:31.000Z</lastmod>
   </url>
