@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title><![CDATA[Geeekr Note]]></title>
-  <subtitle><![CDATA[Keep Change]]></subtitle>
+  <subtitle><![CDATA[生活不止眼前的苟且，还有诗和远方的田野]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://geeekr.com/"/>
   <updated>2016-02-16T08:27:45.000Z</updated>
