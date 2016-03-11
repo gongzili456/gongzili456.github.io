@@ -131,8 +131,9 @@ pre {
         }
     }
 }
+ // "ruby", "perl", "php", "c++", "c", "java"
 
-$signs: ("html", "js", "bash", "css", "scss","diff", "java", "xml", "python", "json");
+$signs: ("html", "js", "bash", "css", "scss","diff", "java", "xml", "python", "json", "swift", "ruby", "perl", "php", "c", "java");
 @include code-signs($signs);
 
 pre {
@@ -159,9 +160,6 @@ pre {
     .nginx .title,
     .tex .special {
         color: #2973b7;
-    }
-    .class .title {
-        color: #fff;
     }
     .symbol,
     .symbol .string,

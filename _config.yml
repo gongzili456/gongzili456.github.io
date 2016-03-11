@@ -3,8 +3,8 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Blog
-subtitle:
+title: Geeekr Note
+subtitle: Keep Change
 description:
 author: liuguili
 language:
@@ -12,7 +12,7 @@ timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://liuguili.xyz
+url: http://geeekr.com
 root: /
 permalink: :title/
 permalink_defaults:
@@ -62,8 +62,10 @@ pagination_dir: page
 
 # Extensions
 ## Plugins: http://hexo.io/plugins/
+Plugins:
+  hexo-generator-cname
 ## Themes: http://hexo.io/themes/
-theme: landscape
+theme: hexo-theme-next
 
 # Deployment
 ## Docs: http://hexo.io/docs/deployment.html

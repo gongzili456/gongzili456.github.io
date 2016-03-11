@@ -1,18 +1,25 @@
 menu:
-    博客: /
-    Twitter: https://twitter.com/gongzili
-    rss: /atom.xml
-    github: https://github.com/gongzili456
+    Blog: /
+    GitHub: https://github.com/gongzili456
+    Rss: /atom.xml
 
-favicon: /favicon.ico
+favicon: /logo.png
 logo: /logo.png
 
-# comment
+# Comment
 # e.g disqus: seansun
 disqus: geeekr-blog
 duoshuo: 
 
+# Analytics
 # google-analytics:
 ga: UA-50816576-1
 # baidu-analytics:
-ba: 
+
+# Copyright Infomation
+startyear: 2014
+
+# Font CDN
+#true : use google fonts api, not stable for chinese visitor sometimes, caused by force majeure factor
+#false: use useso fonts api instead of google's, great response speed for chinese visitor
+googlefonts: true
