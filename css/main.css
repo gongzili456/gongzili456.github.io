@@ -766,7 +766,7 @@ pre .javascript .function {
   font-size: 14px;
   color: #fff;
   background: #222;
-  border: 2px solid #222;
+  border: 1px solid #222;
   text-decoration: none;
   border-radius: 0;
   transition-property: background-color;
@@ -777,8 +777,8 @@ pre .javascript .function {
 .btn:hover,
 .post-more-link .btn:hover {
   border-color: #222;
-  color: #222;
-  background: #fff;
+  color: #fff;
+  background: #222;
 }
 .btn-bar {
   display: block;
@@ -918,7 +918,7 @@ pre .javascript .function {
 }
 .site-meta {
   margin: 0;
-  text-align: center;
+  text-align: left;
 }
 @media (max-width: 767px) {
   .site-meta {
@@ -1004,7 +1004,7 @@ pre .javascript .function {
 .menu {
   margin-top: 20px;
   padding-left: 0;
-  text-align: center;
+  text-align: left;
 }
 .menu .menu-item {
   display: inline-block;
@@ -1225,7 +1225,7 @@ pre .javascript .function {
 }
 .posts-expand .post-title {
   font-size: 26px;
-  text-align: center;
+  text-align: left;
   word-break: break-word;
 }
 @media (max-width: 767px) {
@@ -1263,10 +1263,10 @@ pre .javascript .function {
   font-size: 16px;
 }
 .posts-expand .post-meta {
-  margin: 3px 0 60px 0;
+  margin: 3px 0 30px 0;
   color: #999;
   font-size: 12px;
-  text-align: center;
+  text-align: left;
 }
 .posts-expand .post-meta .post-category-list {
   display: inline-block;
@@ -1306,12 +1306,12 @@ pre .javascript .function {
   }
 }
 .post-more-link {
-  margin-top: 50px;
+  margin-top: 40px;
 }
 .post-more-link .btn {
-  color: #fff;
+  color: #000;
   font-size: 14px;
-  background: #222;
+  background: #fff;
   border-radius: 0;
 }
 .posts-expand .post-tags {
@@ -1359,7 +1359,7 @@ pre .javascript .function {
 .posts-expand .post-eof {
   display: block;
   margin: 80px auto 60px;
-  width: 8%;
+  width: 100%;
   height: 1px;
   background: #ccc;
   text-align: center;
@@ -1465,7 +1465,7 @@ pre .javascript .function {
   margin: 0 auto;
   max-width: 96px;
   height: auto;
-  border: 2px solid #333;
+  border: 0px solid #333;
   padding: 2px;
 }
 .site-author-name {
@@ -1544,7 +1544,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #d5ffff;
+  background: #ffa860;
 }
 .sidebar-nav {
   margin: 0 0 20px;
